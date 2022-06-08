@@ -42,6 +42,9 @@ resource "aws_lambda_function" "lambdaFunc" {
 
   role                           = aws_iam_role.lambda_exec.arn
   reserved_concurrent_executions = var.concurrent_executions
+  tags = {
+    "env" = "test"
+  }
 }
 
 resource "aws_lambda_alias" "con_lambda_alias" {
