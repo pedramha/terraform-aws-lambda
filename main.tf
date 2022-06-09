@@ -11,7 +11,7 @@ resource "random_pet" "lambda_bucket_name" {
 resource "aws_s3_bucket" "lambda_bucket" {
   bucket = random_pet.lambda_bucket_name.id
   acl    = "private"
-    tags = {
+  tags = {
     "env" = "test"
   }
 }
@@ -30,42 +30,10 @@ resource "aws_s3_bucket_object" "lambdaFunc_lambda_bucket" {
   source = data.archive_file.lambdaFunc_lambda_bucket.output_path
 
   etag = filemd5(data.archive_file.lambdaFunc_lambda_bucket.output_path)
-    tags = {
-    "env" = "test"
-  }
-}
-
-resource "aws_lambda_function" "lambdaFunc" {
-  function_name = var.function_name
-
-  s3_bucket = aws_s3_bucket.lambda_bucket.id
-  s3_key    = aws_s3_bucket_object.lambdaFunc_lambda_bucket.key
-
-  runtime = var.lambda_runtime
-  handler = var.handler
-
-  source_code_hash = data.archive_file.lambdaFunc_lambda_bucket.output_base64sha256
-
-  role                           = aws_iam_role.lambda_exec.arn
-  reserved_concurrent_executions = var.concurrent_executions
   tags = {
     "env" = "test"
   }
 }
-
-resource "aws_lambda_alias" "con_lambda_alias" {
-  name             = "lambda_alias"
-  description      = "for blue green deployments OR for concurrency"
-  function_name    = aws_lambda_function.lambdaFunc.arn
-  function_version = var.function_version
-}
-
-resource "aws_lambda_provisioned_concurrency_config" "config" {
-  function_name                     = aws_lambda_alias.con_lambda_alias.function_name
-  provisioned_concurrent_executions = var.provisioned_concurrent_executions
-  qualifier                         = aws_lambda_alias.con_lambda_alias.name
-}
-
 
 resource "aws_iam_role" "lambda_exec" {
   name = "serverless_lambda"
@@ -83,4 +51,31 @@ resource "aws_iam_role" "lambda_exec" {
       ]
     }
   )
+}
+
+resource "aws_lambda_function" "lambdaFunc" {
+  function_name = var.function_name
+  filename      = data.archive_file.lambdaFunc_lambda_bucket.output_path
+  runtime = var.lambda_runtime
+  handler = var.handler
+
+  source_code_hash = data.archive_file.lambdaFunc_lambda_bucket.output_base64sha256
+  publish = true
+  environment {
+    variables = {
+      incoming_bucket_arn = aws_s3_bucket.lambda_bucket.arn
+    }
+  }
+  role                           = aws_iam_role.lambda_exec.arn
+  reserved_concurrent_executions = var.concurrent_executions
+  tags = {
+    "env" = "test"
+  }
+
+}
+
+resource "aws_lambda_provisioned_concurrency_config" "config" {
+  function_name                     = aws_lambda_function.lambdaFunc.function_name
+  provisioned_concurrent_executions = var.provisioned_concurrent_executions
+  qualifier                         = aws_lambda_function.lambdaFunc.version
 }
