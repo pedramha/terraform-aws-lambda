@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "random_pet" "lambda_bucket_name" {
-  prefix = "test"
+  prefix = var.prefix
   length = 4
 }
 
@@ -36,7 +36,7 @@ resource "aws_s3_bucket_object" "lambdaFunc_lambda_bucket" {
 }
 
 resource "aws_iam_role" "lambda_exec" {
-  name = "serverless_lambda"
+  name = "${var.function_name}_lambda_role"
   assume_role_policy = jsonencode(
     {
       "Version" : "2012-10-17",

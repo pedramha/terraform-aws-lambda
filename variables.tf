@@ -40,3 +40,8 @@ variable "function_version" {
   type    = string
   default = "1"
 }
+
+variable "prefix" {
+  type    = string
+  default = "test"
+}
