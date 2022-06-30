@@ -3,13 +3,19 @@ output "lambda_arn" {
   description = "value of the lambda function arn"
 }
 
-output "lambda_role_arn" {
-  value = aws_iam_role.lambda_exec.arn
+output "lambda_invoke_arn" {
+  value       = aws_lambda_function.lambdaFunc.invoke_arn
+  description = "value of the lambda function invoke arn"
 }
 
-output "lambda_name" {
-  value       = aws_lambda_function.lambdaFunc.function_name
-  description = "value of the lambda function name"
+output "lambda_role_arn" {
+  value = aws_iam_role.lambda_exec.arn
+  description = "value of the lambda function role arn"
+}
+
+output "lambda_role_name" {
+  value = aws_iam_role.lambda_exec.arn
+  description = "value of the lambda function role name"
 }
 
 output "provisioned_concurrent_executions" {
