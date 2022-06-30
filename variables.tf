@@ -21,11 +21,6 @@ variable "handler" {
   default = "index.handler"
 }
 
-variable "region" {
-  type    = string
-  default = "eu-central-1"
-}
-
 variable "concurrent_executions" {
   type    = string
   default = "1"

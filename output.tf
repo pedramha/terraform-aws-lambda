@@ -3,6 +3,10 @@ output "lambda_arn" {
   description = "value of the lambda function arn"
 }
 
+output "lambda_role_arn" {
+  value = ""
+}
+
 output "lambda_name" {
   value       = aws_lambda_function.lambdaFunc.function_name
   description = "value of the lambda function name"

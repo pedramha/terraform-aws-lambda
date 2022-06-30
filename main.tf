@@ -1,7 +1,3 @@
-provider "aws" {
-  region = var.region
-}
-
 resource "random_pet" "lambda_bucket_name" {
   prefix = var.prefix
   length = 4
