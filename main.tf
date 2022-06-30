@@ -7,9 +7,6 @@ resource "random_pet" "lambda_bucket_name" {
 resource "aws_s3_bucket" "lambda_bucket" {
   bucket = random_pet.lambda_bucket_name.id
   acl    = "private"
-  tags = {
-    "env" = "test"
-  }
 }
 
 data "archive_file" "lambdaFunc_lambda_bucket" {
@@ -26,9 +23,6 @@ resource "aws_s3_bucket_object" "lambdaFunc_lambda_bucket" {
   source = data.archive_file.lambdaFunc_lambda_bucket.output_path
 
   etag = filemd5(data.archive_file.lambdaFunc_lambda_bucket.output_path)
-  tags = {
-    "env" = "test"
-  }
 }
 
 resource "aws_iam_role" "lambda_exec" {
@@ -52,11 +46,11 @@ resource "aws_iam_role" "lambda_exec" {
 resource "aws_lambda_function" "lambdaFunc" {
   function_name = var.function_name
   filename      = data.archive_file.lambdaFunc_lambda_bucket.output_path
-  runtime = var.lambda_runtime
-  handler = var.handler
+  runtime       = var.lambda_runtime
+  handler       = var.handler
 
   source_code_hash = data.archive_file.lambdaFunc_lambda_bucket.output_base64sha256
-  publish = true
+  publish          = true
   environment {
     variables = {
       incoming_bucket_arn = aws_s3_bucket.lambda_bucket.arn
@@ -64,9 +58,6 @@ resource "aws_lambda_function" "lambdaFunc" {
   }
   role                           = aws_iam_role.lambda_exec.arn
   reserved_concurrent_executions = var.concurrent_executions
-  tags = {
-    "env" = "test"
-  }
 
 }
 
