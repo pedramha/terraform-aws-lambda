@@ -7,6 +7,11 @@ variable "src_path" {
   type = string
 }
 
+variable "stage" {
+  type    = string
+  default = "dev"
+}
+
 variable "target_path" {
   type = string
 }
