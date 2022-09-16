@@ -4,7 +4,7 @@ output "lambda_arn" {
 }
 
 output "lambda_name" {
-  value       = aws_lambda_function.lambdaFunc.name
+  value       = aws_lambda_function.lambdaFunc.function_name
   description = "value of the lambda function arn"
 }
 
