@@ -3,14 +3,14 @@ output "lambda_arn" {
   description = "value of the lambda function arn"
 }
 
-output "lambda_arn" {
+output "lambda_name" {
   value       = aws_lambda_function.lambdaFunc.name
   description = "value of the lambda function arn"
 }
 
 output "lambda_invoke_arn" {
   value       = aws_lambda_function.lambdaFunc.invoke_arn
-  description = "value of the lambda function invoke arn"
+  description = "value of the lambda function invoke name"
 }
 
 output "lambda_role_arn" {
